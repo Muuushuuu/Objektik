@@ -15,9 +15,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ObjektikTheme {
                 // Appel de la fonction composable HomeScreen
-                HomeScreen(onStartClick = {
-                    // Action à exécuter lorsque le bouton "Commencer" est cliqué
-                })
+                HomeScreen(onStartClick = { })
             }
         }
     }
