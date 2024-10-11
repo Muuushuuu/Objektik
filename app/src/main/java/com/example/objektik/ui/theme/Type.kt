@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.sp
 
 
 // Utilisation de la police Roboto par défaut dans Android
-val Typography = Typography(
+val MyTypography = Typography(
     displayLarge = TextStyle(  // Header
         fontFamily = FontFamily.Default,  // Roboto par défaut
         fontWeight = FontWeight.Bold,

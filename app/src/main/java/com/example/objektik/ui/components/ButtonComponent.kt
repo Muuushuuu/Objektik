@@ -1,10 +1,12 @@
 package com.example.objektik.ui.components
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 /**
  * CustomButton - Un bouton réutilisable avec un texte et une couleur de fond personnalisés.
@@ -29,7 +31,8 @@ fun CustomButton(
         modifier = modifier,
         colors = androidx.compose.material3.ButtonDefaults.buttonColors(
             containerColor = backgroundColor
-        )
+        ),
+        shape = RoundedCornerShape(16.dp)
     ) {
         Text(text = text, color = textColor)
     }
