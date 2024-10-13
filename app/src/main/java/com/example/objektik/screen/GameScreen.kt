@@ -1,18 +1,22 @@
 package com.example.objektik.screen
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.*
+import com.example.objektik.ui.components.RequestCameraPermission
+import com.example.objektik.ui.components.CameraCaptureScreen
 
 @Composable
 fun GameScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Bienvenue dans le jeu !")
+    // Gestion de l'état de la permission avec remember et mutableStateOf
+    var permissionGranted by remember { mutableStateOf(false) }
+
+    // Si la permission est accordée, afficher la caméra, sinon demander la permission
+    if (permissionGranted) {
+        // Affiche l'interface de capture de photo
+        CameraCaptureScreen()
+    } else {
+        // Demande la permission d'utiliser la caméra
+        RequestCameraPermission(onPermissionGranted = {
+            permissionGranted = true  // Mettre à jour l'état lorsque la permission est accordée
+        })
     }
 }

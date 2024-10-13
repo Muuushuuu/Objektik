@@ -23,7 +23,9 @@ fun NavGraph(navController: NavHostController) {
 
         // Composable GameScreen
         composable("game") {
-            GameScreen()
+            GameScreen(
+//                onCaptureClick = { /* Appelle la fonction de capture de la photo ici */ }
+            )
         }
     }
 }
