@@ -10,106 +10,91 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import androidx.navigation.NavController
 import com.example.objektik.R
+import com.example.objektik.services.detectObjectsWithGoogleVision
+import com.example.objektik.services.uriToBitmap
 import com.example.objektik.ui.theme.BluePrimary
+import org.json.JSONObject
 import java.io.File
 
 @Composable
-fun CameraCaptureScreen() {
-    val context = LocalContext.current
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
-    var detectedObjects by remember { mutableStateOf<List<String>>(emptyList()) }
-    val imageCapture = remember { ImageCapture.Builder().build() }
-    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController) {
+    Log.d("randomObject", randomObject.toString())
 
-    // Utilisation d'un Box pour superposer la popup par-dessus l'écran
+    val context = LocalContext.current
+    var imageUri by remember { mutableStateOf<Uri?>(null) }  // On va stocker l'URI de l'image capturée ici
+    val imageCapture = remember { ImageCapture.Builder().build() }  // Crée l'objet pour capturer des images
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }  // On récupère la caméra
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Cercle en arrière-plan
-        Box(
-            modifier = Modifier
-                .width(700.dp)
-                .absoluteOffset(x = 0.dp, y = 550.dp)  // Position absolue en bas
-                .aspectRatio(1f) // Même Hauteur que Longeur
-                .background(
-                    color = Color(0xFF76D7C4),
-                    shape = CircleShape
-                )
-                .zIndex(-1f)
-        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Carte avec l'aperçu de la caméra
+            // Carte qui contient l'aperçu de la caméra
             Card(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(8.dp)
-                    .zIndex(-2f),
+                    .padding(8.dp),
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(2.dp, BluePrimary),
             ) {
-                // Vue pour la prévisualisation de la caméra
                 AndroidView(
                     modifier = Modifier.fillMaxSize(),
                     factory = { ctx ->
-                        val previewView = PreviewView(ctx)
+                        val previewView = PreviewView(ctx)  // On affiche la preview
                         val cameraProvider = cameraProviderFuture.get()
                         val preview = Preview.Builder().build().also {
-                            it.setSurfaceProvider(previewView.surfaceProvider)
+                            it.setSurfaceProvider(previewView.surfaceProvider)  // On lie la preview de la caméra
                         }
-                        val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                        val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA  // On choisi la caméra arrière
                         try {
-                            cameraProvider.unbindAll()
+                            cameraProvider.unbindAll()  // On "libère" tout ce qui pourrait déjà être lié à la caméra
                             cameraProvider.bindToLifecycle(
-                                ctx as LifecycleOwner, cameraSelector, preview, imageCapture
+                                ctx as LifecycleOwner, cameraSelector, preview, imageCapture  // On associe la caméra à l'aperçu
                             )
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
-                        previewView
+                        previewView  // On renvoie la vue qui affiche la caméra
                     },
                 )
             }
 
-            // Bouton de capture de la photo avec style circulaire
+            // Ligne pour afficher le bouton "Prendre une photo"
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp)
-                    .height(75.dp), // Taille fixe du bouton en bas
+                    .height(75.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomButtonWithIcon(
                     text = "Prendre une photo",
                     onClick = {
+                        // On prépare le fichier où la photo va être sauvegardée
                         val file = File(context.externalMediaDirs.first(), "${System.currentTimeMillis()}.jpg")
                         val outputOptions = OutputFileOptions.Builder(file).build()
 
+                        // Capture de l'image
                         imageCapture.takePicture(
                             outputOptions, ContextCompat.getMainExecutor(context),
                             object : ImageCapture.OnImageSavedCallback {
@@ -118,13 +103,28 @@ fun CameraCaptureScreen() {
                                 }
 
                                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                                    imageUri = Uri.fromFile(file)
+                                    imageUri = Uri.fromFile(file)  // On récupère l'URI du fichier
 
+                                    // On transforme l'URI en Bitmap pour l'envoyer à Google Vision
                                     val bitmap = uriToBitmap(context, imageUri!!)
-                                    if (bitmap != null) {
+                                    if (bitmap != null && randomObject != null) {
                                         detectObjectsWithGoogleVision(context, bitmap,
                                             onSuccess = { objects ->
-                                                detectedObjects = objects
+                                                // On récupère les noms anglais depuis JSON
+                                                val nomsAnglais = randomObject.getJSONArray("noms_anglais")
+
+                                                // Transforme en liste
+                                                val nomsAnglaisList = (0 until nomsAnglais.length()).map { nomsAnglais.getString(it) }
+
+                                                // Vérifie si un objet détecté correspond à un nom dans la liste
+                                                val objectFound = objects.any { it in nomsAnglaisList }
+
+                                                // Si c'est bon, on va sur la page de succès, sinon sur la page d'erreur
+                                                if (objectFound) {
+                                                    navController.navigate("success/${randomObject.getString("nom_francais")}")
+                                                } else {
+                                                    navController.navigate("error/${randomObject.getString("nom_francais")}")
+                                                }
                                             },
                                             onError = { error ->
                                                 Log.e("GoogleVision", "Erreur lors de la détection d'objets", error)
@@ -137,49 +137,18 @@ fun CameraCaptureScreen() {
                     },
                     backgroundColor = BluePrimary,
                     textColor = Color.White,
-                    imageResource = R.drawable.ic_camera // Icône de l'appareil photo
+                    imageResource = R.drawable.ic_camera
                 )
             }
         }
 
-        // Affiche la popup avec la liste des objets détectés si elle n'est pas vide, au-dessus de tout le reste
-        if (detectedObjects.isNotEmpty()) {
+        // Objet aléatoire a capturer
+        if (randomObject != null) {
             CustomPopup(
-                text = detectedObjects.joinToString(", "),
+                text = "Vous devez trouver : ${randomObject.getString("nom_francais")}",
                 borderColor = BluePrimary,
                 textColor = BluePrimary,
-                modifier = Modifier
-                    .align(Alignment.TopCenter) // Aligne la popup au centre en haut
-                    .padding(top = 16.dp) // Ajoute un padding en haut pour la visibilité
-            )
-        }
-    }
-}
-
-@Composable
-fun CustomButtonWithIcon(
-    text: String,
-    onClick: () -> Unit,
-    backgroundColor: Color,
-    textColor: Color = Color.White,
-    modifier: Modifier = Modifier,
-    imageResource: Int? = null
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier
-            .size(80.dp), // Taille du bouton
-        colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-            containerColor = backgroundColor
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        imageResource?.let {
-            Icon(
-                painter = painterResource(id = it),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.align(Alignment.TopCenter)
             )
         }
     }

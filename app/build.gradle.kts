@@ -81,6 +81,7 @@ dependencies {
     implementation("com.google.cloud:google-cloud-vision:3.50.0")
 
     // gRPC dépendances
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("io.grpc:grpc-okhttp:1.67.1")
     implementation("io.grpc:grpc-stub:1.67.1")
     implementation("io.grpc:grpc-protobuf:1.67.1")

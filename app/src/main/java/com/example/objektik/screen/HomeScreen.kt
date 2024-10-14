@@ -33,6 +33,11 @@ import com.example.objektik.ui.theme.BluePrimary
 import com.example.objektik.ui.theme.MyTypography
 import com.example.objektik.ui.theme.PrimaryText
 
+/**
+ * HomeScreen - L'écran d'accueil où l'utilisateur peut voir un aperçu du jeu et démarrer la partie en cliquant sur "Jouer maintenant".
+ *
+ * @param onStartClick Fonction appelée quand l'utilisateur clique sur le bouton "Jouer maintenant".
+ */
 @Composable
 fun HomeScreen(onStartClick: () -> Unit) {
     Box(
