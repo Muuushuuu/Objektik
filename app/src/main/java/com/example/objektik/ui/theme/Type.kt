@@ -12,17 +12,17 @@ val MyTypography = Typography(
     displayLarge = TextStyle(  // Header
         fontFamily = FontFamily.Default,  // Roboto par défaut
         fontWeight = FontWeight.Bold,
-        fontSize = 38.sp
+        fontSize = 32.sp
     ),
     displayMedium = TextStyle(  // Title
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Bold,
-        fontSize = 22.sp
+        fontSize = 24.sp
     ),
     titleMedium = TextStyle(  // Subtitle
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp
+        fontSize = 18.sp
     ),
     bodyLarge = TextStyle(  // Body Bold
         fontFamily = FontFamily.Default,

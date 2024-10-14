@@ -43,7 +43,7 @@ fun HomeScreen(onStartClick: () -> Unit) {
         Box(
             modifier = Modifier
                 .width(700.dp)
-                .absoluteOffset(x = 0.dp, y = 650.dp)  // Position absolue en bas
+                .absoluteOffset(x = 0.dp, y = 550.dp)  // Position absolue en bas
                 .aspectRatio(1f) // Même Hauteur que Longeur
                 .background(
                     color = Color(0xFF76D7C4),
@@ -125,8 +125,8 @@ fun HomeScreen(onStartClick: () -> Unit) {
                     backgroundColor = BluePrimary,
                     textColor = PrimaryText,
                     modifier = Modifier
-                        .width(285.dp)
-                        .height(75.dp)
+                        .width(250.dp)
+                        .height(50.dp)
                 )
             }
         }

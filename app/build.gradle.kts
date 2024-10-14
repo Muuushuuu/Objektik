@@ -14,6 +14,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -47,6 +48,13 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    packagingOptions {
+        exclude ("META-INF/DEPENDENCIES")
+        exclude ("META-INF/INDEX.LIST")
+        exclude("META-INF/*.SF")
+        exclude("META-INF/*.DSA")
+        exclude("META-INF/*.RSA")
+    }
 }
 
 dependencies {
@@ -67,6 +75,24 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.1.0")
     implementation("androidx.camera:camera-view:1.1.0")
     implementation("androidx.camera:camera-extensions:1.1.0")
+    // Implementation volley
+    implementation("com.android.volley:volley:1.2.1")
+    // Google Cloud Vision
+    implementation("com.google.cloud:google-cloud-vision:3.50.0")
+
+    // gRPC dépendances
+    implementation("io.grpc:grpc-okhttp:1.67.1")
+    implementation("io.grpc:grpc-stub:1.67.1")
+    implementation("io.grpc:grpc-protobuf:1.67.1")
+    implementation("io.grpc:grpc-core:1.67.1") // Ajouté car essentiel pour la classe manquante
+
+    implementation("androidx.multidex:multidex:2.0.1")
+
+    implementation("com.google.guava:guava:31.1-jre") {
+        exclude(group = "com.google.guava", module = "listenablefuture")
+    }
+    implementation("com.google.guava:listenablefuture:1.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
