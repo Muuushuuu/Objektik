@@ -36,13 +36,15 @@ fun NavGraph(navController: NavHostController) {
         // Composable SuccessScreen : affiché lorsqu'un objet a été trouvé avec succès
         composable("success/{nomFrancais}") { backStackEntry ->
             val nomFrancais = backStackEntry.arguments?.getString("nomFrancais")
-            nomFrancais?.let { SuccessScreen(nomFrancais = it) }
+            nomFrancais?.let { SuccessScreen(nomFrancais = it, onStartClick = { navController.navigate("game") }) }
         }
 
         // Composable ErrorScreen : affiché lorsqu'aucun objet n'a été trouvé
         composable("error/{nomFrancais}") { backStackEntry ->
             val nomFrancais = backStackEntry.arguments?.getString("nomFrancais")
-            nomFrancais?.let { ErrorScreen(nomFrancais = it) }
+            nomFrancais?.let {
+                ErrorScreen(nomFrancais = it, onStartClick = { navController.navigate("game") })
+            }
         }
     }
 }
