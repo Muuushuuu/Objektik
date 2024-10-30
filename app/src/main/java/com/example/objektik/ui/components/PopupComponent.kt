@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.objektik.ui.theme.MyTypography
 
 
 /**
@@ -38,8 +39,8 @@ fun CustomPopup(
             .fillMaxWidth()
 
     ) {
-        Box(modifier = Modifier.padding(16.dp)) {
-            Text(text = text, color = textColor, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+        Box(modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp)) {
+            Text(text = text, color = textColor, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(), style = MyTypography.titleMedium,)
         }
     }
 }
