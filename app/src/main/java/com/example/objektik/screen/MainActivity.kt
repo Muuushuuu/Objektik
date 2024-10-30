@@ -9,25 +9,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.objektik.navigation.NavGraph
+import com.example.objektik.services.PointsManager
 import com.example.objektik.ui.theme.ObjektikTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val pointsManager = PointsManager(applicationContext)
         setContent {
             ObjektikTheme {
                 val navController = rememberNavController()
-                NavGraph(navController = navController)
+                NavGraph(navController = navController, pointsManager = pointsManager)
             }
         }
     }
 }
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    ObjektikTheme {
-//        HomeScreen {  }
-//    }
-//}

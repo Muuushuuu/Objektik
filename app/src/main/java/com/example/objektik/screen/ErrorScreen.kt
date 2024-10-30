@@ -54,8 +54,8 @@ fun ErrorScreen(nomFrancais: String, onStartClick: () -> Unit) {
         Box(
             modifier = Modifier
                 .width(700.dp)
-                .absoluteOffset(x = 0.dp, y = 550.dp)  // Position absolue en bas
-                .aspectRatio(1f) // Même Hauteur que Longeur
+                .absoluteOffset(x = 0.dp, y = 550.dp)
+                .aspectRatio(1f)
                 .background(
                     color = GreenAccent,
                     shape = CircleShape
@@ -96,7 +96,7 @@ fun ErrorScreen(nomFrancais: String, onStartClick: () -> Unit) {
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.sad),
-                            contentDescription = "Image emohi sad",
+                            contentDescription = "Image emoji sad",
                             modifier = Modifier.size(150.dp),
                             contentScale = ContentScale.Crop
                         )
@@ -123,7 +123,7 @@ fun ErrorScreen(nomFrancais: String, onStartClick: () -> Unit) {
             textColor = Color.White,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 75.dp) // Ajuste la marge en bas si nécessaire
+                .padding(bottom = 75.dp)
                 .width(200.dp)
                 .height(50.dp)
                 .zIndex(2f)

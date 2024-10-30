@@ -9,6 +9,7 @@ import com.example.objektik.screen.ErrorScreen
 import com.example.objektik.screen.HomeScreen
 import com.example.objektik.screen.GameScreen
 import com.example.objektik.screen.SuccessScreen
+import com.example.objektik.services.PointsManager
 
 /**
  * NavGraph - Un composant permettant de gérer la navigation entre les différentes pages de l'application.
@@ -16,7 +17,7 @@ import com.example.objektik.screen.SuccessScreen
  * @param navController Le contrôleur de navigation utilisé pour gérer les transitions entre les écrans.
  */
 @Composable
-fun NavGraph(navController: NavHostController) {
+fun NavGraph(navController: NavHostController, pointsManager: PointsManager) {
     NavHost(
         navController = navController,
         startDestination = "home"  // Écran de départ
@@ -24,7 +25,8 @@ fun NavGraph(navController: NavHostController) {
         // Composable HomeScreen
         composable("home") {
             HomeScreen(
-                onStartClick = { navController.navigate("game") }  // Démarrer GameScreen
+                onStartClick = { navController.navigate("game") },  // Démarrer GameScreen
+                points = pointsManager.getPoints()
             )
         }
 
@@ -36,7 +38,18 @@ fun NavGraph(navController: NavHostController) {
         // Composable SuccessScreen : affiché lorsqu'un objet a été trouvé avec succès
         composable("success/{nomFrancais}") { backStackEntry ->
             val nomFrancais = backStackEntry.arguments?.getString("nomFrancais")
-            nomFrancais?.let { SuccessScreen(nomFrancais = it, onStartClick = { navController.navigate("game") }) }
+            nomFrancais?.let {
+                SuccessScreen(
+                    nomFrancais = it,
+                    onStartClick = {
+                        navController.navigate("game")
+                    },
+                    onAddPoints = { points ->  // Ajout des points
+                        pointsManager.addPoints(points)
+                    },
+                    points = pointsManager.getPoints()
+                )
+            }
         }
 
         // Composable ErrorScreen : affiché lorsqu'aucun objet n'a été trouvé

@@ -39,7 +39,7 @@ import com.example.objektik.ui.theme.PrimaryText
  * @param onStartClick Fonction appelée quand l'utilisateur clique sur le bouton "Jouer maintenant".
  */
 @Composable
-fun HomeScreen(onStartClick: () -> Unit) {
+fun HomeScreen(onStartClick: () -> Unit, points: Int) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -48,8 +48,8 @@ fun HomeScreen(onStartClick: () -> Unit) {
         Box(
             modifier = Modifier
                 .width(700.dp)
-                .absoluteOffset(x = 0.dp, y = 550.dp)  // Position absolue en bas
-                .aspectRatio(1f) // Même Hauteur que Longeur
+                .absoluteOffset(x = 0.dp, y = 550.dp)
+                .aspectRatio(1f)
                 .background(
                     color = Color(0xFF76D7C4),
                     shape = CircleShape
@@ -102,7 +102,7 @@ fun HomeScreen(onStartClick: () -> Unit) {
 
                 // Texte des trophées
                 Text(
-                    text = "0 Trophées",
+                    text = "$points Trophées",
                     color = BluePrimary,
                     fontSize = 18.sp,
                     modifier = Modifier.padding(top = 8.dp),
