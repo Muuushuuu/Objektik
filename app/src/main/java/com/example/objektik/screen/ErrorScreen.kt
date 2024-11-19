@@ -50,23 +50,10 @@ fun ErrorScreen(nomFrancais: String, onStartClick: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize()
     ){
-        // Cercle en arrière-plan
-        Box(
-            modifier = Modifier
-                .width(700.dp)
-                .absoluteOffset(x = 0.dp, y = 550.dp)
-                .aspectRatio(1f)
-                .background(
-                    color = GreenAccent,
-                    shape = CircleShape
-                )
-                .zIndex(1f)
-        )
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 24.dp),
+                .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
             Card(
@@ -105,7 +92,7 @@ fun ErrorScreen(nomFrancais: String, onStartClick: () -> Unit) {
                                 .height(50.dp))
 
                         Text(
-                            text = "Dommage ce n'est pas l'objet à trouver... \nL'objet à trouver est \"$nomFrancais\"",
+                            text = "L’objet n’a pas été reconnu, essayez encore ! \nL'objet à trouver est \"$nomFrancais\"",
                             fontSize = 18.sp,
                             textAlign = TextAlign.Center,
                             color = ErrorColor
@@ -119,7 +106,7 @@ fun ErrorScreen(nomFrancais: String, onStartClick: () -> Unit) {
         CustomButton(
             text = "Réessayer",
             onClick = onStartClick,
-            backgroundColor = BluePrimary,
+            backgroundColor = ErrorColor,
             textColor = Color.White,
             modifier = Modifier
                 .align(Alignment.BottomCenter)

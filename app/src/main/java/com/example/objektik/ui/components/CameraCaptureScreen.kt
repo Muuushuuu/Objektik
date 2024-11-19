@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.NavController
 import com.example.objektik.R
+import com.example.objektik.screen.RecognitionState
 import com.example.objektik.services.detectObjectsWithGoogleVision
 import com.example.objektik.services.uriToBitmap
 import com.example.objektik.ui.theme.BluePrimary
@@ -31,7 +32,7 @@ import org.json.JSONObject
 import java.io.File
 
 @Composable
-fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController) {
+fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController, recognitionState: MutableState<RecognitionState>) {
     Log.d("randomObject", randomObject.toString())
 
     val context = LocalContext.current
@@ -90,6 +91,7 @@ fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController)
                 CustomButtonWithIcon(
                     text = "Prendre une photo",
                     onClick = {
+                        recognitionState.value = RecognitionState.Loading // Passe en état de chargement
                         // On prépare le fichier où la photo va être sauvegardée
                         val file = File(context.externalMediaDirs.first(), "${System.currentTimeMillis()}.jpg")
                         val outputOptions = OutputFileOptions.Builder(file).build()
@@ -120,10 +122,15 @@ fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController)
                                                 val objectFound = objects.any { it in nomsAnglaisList }
 
                                                 // Si c'est bon, on va sur la page de succès, sinon sur la page d'erreur
+//                                                if (objectFound) {
+//                                                    navController.navigate("success/${randomObject.getString("nom_francais")}")
+//                                                } else {
+//                                                    navController.navigate("error/${randomObject.getString("nom_francais")}")
+//                                                }
                                                 if (objectFound) {
-                                                    navController.navigate("success/${randomObject.getString("nom_francais")}")
+                                                    recognitionState.value = RecognitionState.Success
                                                 } else {
-                                                    navController.navigate("error/${randomObject.getString("nom_francais")}")
+                                                    recognitionState.value = RecognitionState.Error
                                                 }
                                             },
                                             onError = { error ->

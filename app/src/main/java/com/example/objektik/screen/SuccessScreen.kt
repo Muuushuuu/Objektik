@@ -52,29 +52,14 @@ fun SuccessScreen(nomFrancais: String, onStartClick: () -> Unit, onAddPoints: (I
         modifier = Modifier.fillMaxSize()
     ) {
         // Appel unique
-        LaunchedEffect(Unit) {
+        LaunchedEffect(key1 = points) {
             onAddPoints(10) // ajout des point
             // Log.d("PointsADD", "ajouter 10 points : ${points + 10}")
         }
-
-
-        // Cercle en arrière-plan
-        Box(
-            modifier = Modifier
-                .width(700.dp)
-                .absoluteOffset(x = 0.dp, y = 550.dp)
-                .aspectRatio(1f)
-                .background(
-                    color = GreenAccent,
-                    shape = CircleShape
-                )
-                .zIndex(1f)
-        )
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 24.dp),
+                .padding(8.dp),
             contentAlignment = Alignment.Center
         ) {
             Card(
@@ -126,7 +111,7 @@ fun SuccessScreen(nomFrancais: String, onStartClick: () -> Unit, onAddPoints: (I
         CustomButton(
             text = "Rejoué",
             onClick = onStartClick,
-            backgroundColor = BluePrimary,
+            backgroundColor = SuccessColor,
             textColor = Color.White,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
