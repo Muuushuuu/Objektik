@@ -10,15 +10,21 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
@@ -27,12 +33,14 @@ import com.example.objektik.R
 import com.example.objektik.screen.RecognitionState
 import com.example.objektik.services.detectObjectsWithGoogleVision
 import com.example.objektik.services.uriToBitmap
+import com.example.objektik.ui.theme.AccentText
 import com.example.objektik.ui.theme.BluePrimary
+import com.example.objektik.ui.theme.GreenAccent
 import org.json.JSONObject
 import java.io.File
 
 @Composable
-fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController, recognitionState: MutableState<RecognitionState>) {
+fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController, recognitionState: MutableState<RecognitionState>, points: Int) {
     Log.d("randomObject", randomObject.toString())
 
     val context = LocalContext.current
@@ -145,6 +153,27 @@ fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController,
                     backgroundColor = BluePrimary,
                     textColor = Color.White,
                     imageResource = R.drawable.ic_camera
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .fillMaxWidth()
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.trophy_accent),
+                    contentDescription = "Icône de trophée",
+                    modifier = Modifier.size(40.dp),
+                    contentScale = ContentScale.Fit
+                )
+                Spacer(modifier = Modifier.size(16.dp, 0.dp))
+                Text(
+                    text = "$points Trophées",
+                    color = GreenAccent,
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center
                 )
             }
         }

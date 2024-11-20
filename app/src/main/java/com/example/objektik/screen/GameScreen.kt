@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.objektik.services.PointsManager
 import com.example.objektik.ui.components.RequestCameraPermission
 import com.example.objektik.ui.components.CameraCaptureScreen
 import com.example.objektik.services.getRandomObjectFromServer
@@ -31,6 +32,12 @@ enum class RecognitionState {
  */
 @Composable
 fun GameScreen(navController: NavHostController) {
+
+    val context = LocalContext.current
+
+    val pointsManager = remember { PointsManager(context) } // Instance unique de PointsManager
+    var points by remember { mutableStateOf(pointsManager.getPoints()) } // Récupère les points au lancement
+
     var shouldLoadNewWord by remember { mutableStateOf(true) } // verifie si le mot dois changer ou pas
     val recognitionState = remember { mutableStateOf(RecognitionState.Idle) }
     // Booléen pour savoir si la permission caméra est accorder
@@ -42,12 +49,12 @@ fun GameScreen(navController: NavHostController) {
     // URL du fichier JSON
     val jsonUrl = "https://mcida.fr/objektik.json"
 
-    val context = LocalContext.current
 
     // Appelle l'API pour trouver un objet aléatoire quand l'écran est chargé
     LaunchedEffect(shouldLoadNewWord) {
         if (shouldLoadNewWord) {
             randomObject = getRandomObjectFromServer(jsonUrl)
+            shouldLoadNewWord = false // Réinitialise pour éviter des appels inutiles
         }
     }
 
@@ -62,7 +69,8 @@ fun GameScreen(navController: NavHostController) {
                 CameraCaptureScreen(
                     randomObject = randomObject,
                     navController = navController,
-                    recognitionState = recognitionState
+                    recognitionState = recognitionState,
+                    points = points
                 )
             } else {
                 RequestCameraPermission(onPermissionGranted = {
@@ -86,8 +94,11 @@ fun GameScreen(navController: NavHostController) {
             SuccessScreen(
                 nomFrancais = randomObject?.getString("nom_francais") ?: "",
                 onStartClick = { resetGame(loadNewWord = true) },
-                onAddPoints = { points -> /* logique pour ajouter des points */ },
-                points = 0 // Points actuels
+                onAddPoints = { addedPoints ->
+                    points += addedPoints // Met à jour les points dans l'UI
+                    pointsManager.addPoints(addedPoints) // Sauvegarde dans SharedPreferences
+                },
+                points = points
             )
         }
         RecognitionState.Error -> {

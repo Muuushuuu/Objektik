@@ -52,9 +52,9 @@ fun SuccessScreen(nomFrancais: String, onStartClick: () -> Unit, onAddPoints: (I
         modifier = Modifier.fillMaxSize()
     ) {
         // Appel unique
-        LaunchedEffect(key1 = points) {
+        LaunchedEffect(Unit) {
             onAddPoints(10) // ajout des point
-            // Log.d("PointsADD", "ajouter 10 points : ${points + 10}")
+            Log.d("PointsADD", "ajouter 10 points : ${points + 10}")
         }
         Box(
             modifier = Modifier
@@ -88,7 +88,7 @@ fun SuccessScreen(nomFrancais: String, onStartClick: () -> Unit, onAddPoints: (I
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.trophy_accent),
+                            painter = painterResource(id = R.drawable.trophy_sucess),
                             contentDescription = "Image trophy",
                             modifier = Modifier.size(150.dp),
                             contentScale = ContentScale.Crop
