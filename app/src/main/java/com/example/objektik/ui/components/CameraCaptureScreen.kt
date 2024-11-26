@@ -33,12 +33,19 @@ import com.example.objektik.R
 import com.example.objektik.screen.RecognitionState
 import com.example.objektik.services.detectObjectsWithGoogleVision
 import com.example.objektik.services.uriToBitmap
-import com.example.objektik.ui.theme.AccentText
 import com.example.objektik.ui.theme.BluePrimary
 import com.example.objektik.ui.theme.GreenAccent
 import org.json.JSONObject
 import java.io.File
 
+/**
+ * CameraCaptureScreen - Écran de capture photo avec prévisualisation et détection d'objets.
+ *
+ * @param randomObject Objet aléatoire que l'utilisateur doit capturer (en JSON).
+ * @param navController Contrôleur de navigation pour naviguer entre les écrans.
+ * @param recognitionState État actuel de la reconnaissance (Success, Error, Loading).
+ * @param points Nombre de trophées accumulés par l'utilisateur.
+ */
 @Composable
 fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController, recognitionState: MutableState<RecognitionState>, points: Int) {
     Log.d("randomObject", randomObject.toString())
@@ -46,7 +53,7 @@ fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController,
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }  // On va stocker l'URI de l'image capturée ici
     val imageCapture = remember { ImageCapture.Builder().build() }  // Crée l'objet pour capturer des images
-    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }  // On récupère la caméra
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }  // Fournisseur de caméra pour accéder à la caméra du téléphone
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -66,15 +73,16 @@ fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController,
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(2.dp, BluePrimary),
             ) {
+                // Affiche la preview de la caméra
                 AndroidView(
                     modifier = Modifier.fillMaxSize(),
                     factory = { ctx ->
-                        val previewView = PreviewView(ctx)  // On affiche la preview
+                        val previewView = PreviewView(ctx)  // Widget de prévisualisation
                         val cameraProvider = cameraProviderFuture.get()
                         val preview = Preview.Builder().build().also {
                             it.setSurfaceProvider(previewView.surfaceProvider)  // On lie la preview de la caméra
                         }
-                        val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA  // On choisi la caméra arrière
+                        val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA  // Utilise la caméra arrière
                         try {
                             cameraProvider.unbindAll()  // On "libère" tout ce qui pourrait déjà être lié à la caméra
                             cameraProvider.bindToLifecycle(
@@ -88,7 +96,7 @@ fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController,
                 )
             }
 
-            // Ligne pour afficher le bouton "Prendre une photo"
+            // Bouton pour capturer une photo
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -114,27 +122,21 @@ fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController,
 
                                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                                     imageUri = Uri.fromFile(file)  // On récupère l'URI du fichier
+                                    Log.d("ImageCapture", "Photo enregistrée à : $imageUri")
 
-                                    // On transforme l'URI en Bitmap pour l'envoyer à Google Vision
+                                    // Transformation de l'URI en Bitmap
                                     val bitmap = uriToBitmap(context, imageUri!!)
                                     if (bitmap != null && randomObject != null) {
                                         detectObjectsWithGoogleVision(context, bitmap,
                                             onSuccess = { objects ->
-                                                // On récupère les noms anglais depuis JSON
+                                                // Récupération des noms anglais depuis JSON
                                                 val nomsAnglais = randomObject.getJSONArray("noms_anglais")
 
-                                                // Transforme en liste
+                                                // Transformer en liste
                                                 val nomsAnglaisList = (0 until nomsAnglais.length()).map { nomsAnglais.getString(it) }
 
                                                 // Vérifie si un objet détecté correspond à un nom dans la liste
                                                 val objectFound = objects.any { it in nomsAnglaisList }
-
-                                                // Si c'est bon, on va sur la page de succès, sinon sur la page d'erreur
-//                                                if (objectFound) {
-//                                                    navController.navigate("success/${randomObject.getString("nom_francais")}")
-//                                                } else {
-//                                                    navController.navigate("error/${randomObject.getString("nom_francais")}")
-//                                                }
                                                 if (objectFound) {
                                                     recognitionState.value = RecognitionState.Success
                                                 } else {
@@ -155,6 +157,7 @@ fun CameraCaptureScreen(randomObject: JSONObject?, navController: NavController,
                     imageResource = R.drawable.ic_camera
                 )
             }
+            // Affiche le nombre de trophées
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,

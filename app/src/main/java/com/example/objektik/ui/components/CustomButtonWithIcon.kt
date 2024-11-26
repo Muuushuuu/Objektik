@@ -11,7 +11,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 /**
- * Bouton personnalisé avec icône, qu'on utilise pour prendre la photo.
+ * CustomButtonWithIcon - Un composant de bouton personnalisé avec une icône optionnelle.
+ *
+ * Utilisé principalement pour prendre une photo ou exécuter une action liée à un bouton avec un style spécifique.
+ *
+ * @param text Texte associé au bouton (non utilisé dans cette implémentation, mais prévu pour des extensions futures).
+ * @param onClick Fonction appelée lors du clic sur le bouton.
+ * @param backgroundColor Couleur de fond du bouton.
+ * @param textColor Couleur du texte du bouton (par défaut : blanc).
+ * @param modifier Modificateur pour personnaliser l'apparence et le comportement du bouton.
+ * @param imageResource Identifiant de la ressource d'image utilisée comme icône (optionnel).
  */
 @Composable
 fun CustomButtonWithIcon(
@@ -22,6 +31,7 @@ fun CustomButtonWithIcon(
     modifier: Modifier = Modifier,
     imageResource: Int? = null
 ) {
+    // Bouton principal
     Button(
         onClick = onClick,
         modifier = modifier
@@ -31,6 +41,7 @@ fun CustomButtonWithIcon(
         ),
         shape = RoundedCornerShape(16.dp)
     ) {
+        // Affiche l'icône uniquement si une image est fournie
         imageResource?.let {
             Icon(
                 painter = painterResource(id = it),
