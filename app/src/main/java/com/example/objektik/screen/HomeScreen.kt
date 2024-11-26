@@ -36,10 +36,12 @@ import com.example.objektik.ui.theme.PrimaryText
 /**
  * HomeScreen - L'écran d'accueil où l'utilisateur peut voir un aperçu du jeu et démarrer la partie en cliquant sur "Jouer maintenant".
  *
- * @param onStartClick Fonction appelée quand l'utilisateur clique sur le bouton "Jouer maintenant".
+ * @param onStartClick Fonction déclenchée lors du clic sur le bouton "Jouer maintenant".
+ * @param points Nombre total de trophées collectés par l'utilisateur.
  */
 @Composable
 fun HomeScreen(onStartClick: () -> Unit, points: Int) {
+    // Conteneur principal
     Box(
         modifier = Modifier
             .fillMaxSize()
