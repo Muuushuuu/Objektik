@@ -23,7 +23,7 @@ Objectique est une application éducative développée en Kotlin avec Jetpack Co
 
 *(Vidéo de démonstration :)*
 
-![vidéo](https://mcida.fr/Demo/Objektik.mp4)
+https://mcida.fr/Demo/Objektik.mp4
 
 ---
 
